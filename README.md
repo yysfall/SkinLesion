@@ -17,6 +17,3 @@ asd
 
 ## Project Structure
 asd
-
-## Ethics
-asdd
