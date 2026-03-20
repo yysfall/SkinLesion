@@ -12,5 +12,3 @@ folders = [
 for folder in folders:
     os.makedirs(folder, exist_ok=True)
     open(os.path.join(folder, ".gitkeep"), "w").close()
-
-print("Folders + .gitkeep files created!")
