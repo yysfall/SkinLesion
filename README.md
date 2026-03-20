@@ -1,7 +1,7 @@
 # Skin Lesion Classification with Grad-CAM
-Dela Bueno, Paul
-Ibe, Gian Kyle
-Rodriguez, Angelle Joshe
+Dela Bueno, Paul<br />
+Ibe, Gian Kyle<br />
+Rodriguez, Angelle Joshe<br />
 Sicat, Abram
 
 ## Overview
