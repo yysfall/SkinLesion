@@ -1,7 +1,8 @@
-import cv2
 import numpy as np
 import tensorflow as tf
+from PIL import Image
 import matplotlib.pyplot as plt
+from matplotlib import cm
 
 def get_last_conv_layer_name(model):
     for layer in reversed(model.layers):
@@ -9,15 +10,28 @@ def get_last_conv_layer_name(model):
             return layer.name
     raise ValueError("No convolutional layer found.")
 
+
 def make_gradcam_heatmap(img_array, model, last_conv_layer_name):
     grad_model = tf.keras.models.Model(
-        [model.inputs],
+        model.inputs,
         [model.get_layer(last_conv_layer_name).output, model.output]
     )
 
     with tf.GradientTape() as tape:
         conv_outputs, preds = grad_model(img_array)
-        loss = preds[:, 0]
+
+        if isinstance(preds, (list, tuple)):
+            if len(preds) == 1:
+                preds = preds[0]
+            else:
+                preds = tf.stack(preds, axis=-1)
+
+        preds = tf.convert_to_tensor(preds)
+
+        if preds.shape.ndims == 1:
+            loss = preds
+        else:
+            loss = preds[:, 0]
 
     grads = tape.gradient(loss, conv_outputs)
     pooled_grads = tf.reduce_mean(grads, axis=(0, 1, 2))
@@ -29,17 +43,22 @@ def make_gradcam_heatmap(img_array, model, last_conv_layer_name):
     heatmap = tf.maximum(heatmap, 0) / (tf.math.reduce_max(heatmap) + 1e-8)
     return heatmap.numpy()
 
+
 def overlay_gradcam(img_path, heatmap, alpha=0.4):
-    img = cv2.imread(img_path)
-    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = Image.open(img_path).convert("RGB")
+    img_arr = np.array(img)
 
     heatmap = np.uint8(255 * heatmap)
-    heatmap = cv2.resize(heatmap, (img.shape[1], img.shape[0]))
-    heatmap = cv2.applyColorMap(heatmap, cv2.COLORMAP_JET)
-    heatmap = cv2.cvtColor(heatmap, cv2.COLOR_BGR2RGB)
+    heatmap_img = Image.fromarray(heatmap).resize((img_arr.shape[1], img_arr.shape[0]), Image.BILINEAR)
+    heatmap_arr = np.array(heatmap_img)
 
-    superimposed = cv2.addWeighted(img, 1 - alpha, heatmap, alpha, 0)
-    return img, superimposed
+    colormap = cm.get_cmap("jet")
+    heatmap_colored = colormap(heatmap_arr / 255.0)[:, :, :3]
+    heatmap_colored = np.uint8(heatmap_colored * 255)
+
+    superimposed = np.uint8((1 - alpha) * img_arr + alpha * heatmap_colored)
+    return img_arr, superimposed
+
 
 def save_gradcam_result(original, superimposed, save_path):
     plt.figure(figsize=(10, 4))
