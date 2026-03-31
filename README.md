@@ -4,9 +4,6 @@ Ibe, Gian Kyle<br />
 Rodriguez, Angelle Joshe<br />
 Sicat, Abram
 
-## Overview
-asd
-
 ## Components
 - CNN: MobileNetV3 + Grad-CAM
 - NLP: Text classification (TF-IDF)
@@ -34,5 +31,3 @@ Sample NLP prediction: [0]
 **RL Treshold**<br />
 Best threshold: 0.0 Reward: 55.0
 
-## Project Structure
-asd
