@@ -1,7 +1,7 @@
+import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Replace these with actual CNN probabilities later if available
 np.random.seed(42)
 y_probs = np.random.rand(100)
 y_true = np.random.randint(0, 2, 100)
@@ -27,8 +27,10 @@ for thr in thresholds:
         best_reward = reward
         best_threshold = thr
 
-print(f"Best threshold: {best_threshold}")
-print(f"Best reward: {best_reward}")
+print("Best threshold:", best_threshold)
+print("Best reward:", best_reward)
+
+os.makedirs("results/plots", exist_ok=True)
 
 plt.figure()
 plt.plot(thresholds, rewards, marker="o")

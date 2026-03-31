@@ -12,8 +12,6 @@ df["localization"] = df["localization"].fillna("").astype(str)
 df["sex"] = df["sex"].fillna("").astype(str)
 
 df["text"] = df["age"] + " " + df["sex"] + " " + df["localization"]
-
-# Binary target: mel = malignant, others = benign
 df["label"] = df["dx"].apply(lambda x: 1 if str(x).lower() == "mel" else 0)
 
 X_train, X_test, y_train, y_test = train_test_split(
@@ -28,8 +26,6 @@ clf = MultinomialNB()
 clf.fit(X_train_vec, y_train)
 
 y_pred = clf.predict(X_test_vec)
-print(classification_report(y_test, y_pred, digits=4))
 
-sample = ["60 male scalp"]
-sample_vec = vectorizer.transform(sample)
-print("Sample prediction:", clf.predict(sample_vec)[0])
+print(classification_report(y_test, y_pred, digits=4))
+print("Sample NLP prediction:", clf.predict(vectorizer.transform(["60 male scalp"]))[0])

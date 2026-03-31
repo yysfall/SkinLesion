@@ -3,7 +3,12 @@ import sys
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing import image
-from gradcam import get_last_conv_layer_name, make_gradcam_heatmap, overlay_gradcam, save_gradcam_result
+from gradcam_utils import (
+    get_last_conv_layer_name,
+    make_gradcam_heatmap,
+    overlay_gradcam,
+    save_gradcam_result
+)
 
 IMG_SIZE = (224, 224)
 MODEL_PATH = "models/skin_lesion_model.keras"

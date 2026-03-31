@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
@@ -26,15 +27,20 @@ y_probs = model.predict(test_gen).ravel()
 y_pred = (y_probs >= 0.5).astype(int)
 
 auc = roc_auc_score(y_true, y_probs)
+
 print("ROC-AUC:", auc)
-print("Confusion Matrix:")
+print("\nConfusion Matrix:")
 print(confusion_matrix(y_true, y_pred))
-print("Classification Report:")
+print("\nClassification Report:")
 print(classification_report(y_true, y_pred, digits=4))
 
+os.makedirs("results", exist_ok=True)
+
 with open("results/metrics.txt", "w") as f:
-    f.write(f"ROC-AUC: {auc}\n")
+    f.write(f"ROC-AUC: {auc}\n\n")
     f.write("Confusion Matrix:\n")
-    f.write(str(confusion_matrix(y_true, y_pred)) + "\n")
+    f.write(str(confusion_matrix(y_true, y_pred)) + "\n\n")
     f.write("Classification Report:\n")
     f.write(classification_report(y_true, y_pred, digits=4))
+
+print("\nMetrics saved to results/metrics.txt")
