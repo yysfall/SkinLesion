@@ -1,7 +1,6 @@
-import streamlit as st
 import os
-from PIL import Image
-from scripts.predictImage import predict_image
+import streamlit as st
+from scripts.predict_image import predict_image
 
 st.set_page_config(page_title="Skin Lesion Classification", layout="centered")
 
